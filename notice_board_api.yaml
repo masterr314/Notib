@@ -1,0 +1,868 @@
+openapi: 3.0.3
+
+info:
+  title: Notice Board - OpenAPI 3.0
+  description: |-
+    This id description for `Notice Board` project.
+    There are local and public **notices**. Local ones are only for users in the same location. Public for everyone, even for non-users of the service.
+    
+    Some useful links:
+    - [GitHub repo](https://github.com/masterr314/PP_lab_repo)
+    - [Swagger](https://swagger.io/docs/specification/basic-structure/)
+    - [Flask](https://flask.palletsprojects.com/en/2.2.x/)
+    - [Pipenv](https://pipenv.pypa.io/en/latest/)
+
+  contact:
+    email: masterrr314@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+
+servers:
+  - url: https://notice-board.com/api/v1
+    description: Server for production
+  - url: http://localhost:{port}/api/v1
+    description: Server for development
+    variables:
+      port:
+        enum:
+          - '5000'
+          - '3001'
+          - '3000'
+        default: '3001'
+  
+tags:
+  - name: Notice
+    description: Everything about Notices
+  - name: User
+    description: About Users
+  - name: Group
+    description: All about Groups
+  - name: Tag
+    description: Everything about Tags
+      
+paths:
+  
+  # Users  
+  /users:
+     get:
+      tags:
+        - User
+      summary: Retrive all users
+      description: Get all users in the system
+      operationId: getUsers
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'          
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+      
+  /user:
+    post:
+      tags:
+        - User
+      summary: Add new User
+      description: Add new User to the system
+      operationId: addUser
+      requestBody:
+        description: Created User object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+
+  /user/{id}:
+    get:
+      tags:
+        - User
+      summary: Get user by id
+      description: Retrieve user using id
+      operationId: getUserById
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'          
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all 
+        - user_auth:
+          - write_user
+          - read_user
+          
+    put:
+      tags:
+        - User
+      summary: Update user
+      description: Add new user to the system
+      operationId: updateUser
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      requestBody:
+        description: Update User object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+        - user_auth:
+          - write_user
+          - read_user
+          
+    delete:
+      tags:
+        - User
+      summary: Delete user
+      description: Delete user from the system
+      operationId: deleteUser
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          $ref: '#/components/schemas/User'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed' 
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+        - user_auth:
+          - write_user
+          - read_user
+          
+  # Notices
+  /notices:
+    get:
+      tags:
+        - Notice
+      summary: Retrive all notices
+      description: Get all notices available in the system
+      operationId: getNotices
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notice'          
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+          
+  /notice:
+    post:
+      tags:
+        - Notice
+      summary: Add new notice
+      description: Add new Notice to the system
+      operationId: addNotice
+      requestBody:
+        description: Created Notice object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notice'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Notice'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+        - user_auth:
+          - write_notice
+          - read_notice
+          
+  /notice/{id}:
+    get:
+      tags:
+        - Notice
+      summary: Get notice by id
+      description: Retrieve notice using id
+      operationId: getNoticeById
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notice'          
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+          
+    put:
+      tags:
+        - Notice
+      summary: Update notice
+      description: Add new Notice to the system
+      operationId: updateNotice
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      requestBody:
+        description: Update Notice object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notice'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Notice'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+        - user_auth:
+          - write_notice
+          - read_notice
+      
+    delete:
+      tags:
+        - Notice
+      summary: Delete notice
+      description: Delete Notice from the system
+      operationId: deleteNotice
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Notice'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed' 
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+        - user_auth:
+          - write_notice
+          - read_notice
+          
+  # Tags
+  /tags:
+    get:
+      tags:
+        - Tag
+      summary: Retrive all tags
+      description: Get all tags available in the system
+      operationId: getTags
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'          
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+          
+  /tag:
+    post:
+      tags:
+        - Tag
+      summary: Add new tag
+      description: Add new Tag to the system
+      operationId: addTag
+      requestBody:
+        description: Created Tag
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Tag'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'   
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+          
+  /tag/{id}:
+    get:
+      tags:
+        - Tag
+      summary: Get tag by id
+      description: Retrieve tag using id
+      operationId: getTagById
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'          
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+          
+    put:
+      tags:
+        - Tag
+      summary: Update tag
+      description: Add new Tag to the system
+      operationId: updateTag
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      requestBody:
+        description: Update Tag object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Tag'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+          
+    delete:
+      tags:
+        - Tag
+      summary: Delete tag
+      description: Delete Tag from the system
+      operationId: deleteTag
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Tag'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'   
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+          
+  # Groups
+  /groups:
+   get:
+    tags:
+      - Group
+    summary: Retrive all groups
+    description: Get all groups in the system
+    operationId: getGroups
+    responses:
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Group'          
+      '400':
+        $ref: '#/components/responses/BadRequest'
+      '404':
+        $ref: '#/components/responses/NotFound'
+      '405':
+        $ref: '#/components/responses/MethodNotAllowed'
+      '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+          
+  /group:
+    post:
+      tags:
+        - Group
+      summary: Add new group
+      description: Add new group to the system
+      operationId: addGroup
+      requestBody:
+        description: Created Group object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Group'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+          
+  /group/{id}:
+    get:
+      tags:
+        - Group
+      summary: Get group by id
+      description: Retrieve group using id
+      operationId: getGroupById
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'          
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+          
+    put:
+      tags:
+        - Group
+      summary: Update group
+      description: Add new group to the system
+      operationId: updateGroup
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      requestBody:
+        description: Update Group object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Group'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Group'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed' 
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+          
+    delete:
+      tags:
+        - Group
+      summary: Delete Group
+      description: Delete Group from the system
+      operationId: deleteGroup
+      parameters:
+        - $ref: '#/components/parameters/idParam'
+      responses:
+        '200':
+          $ref: '#/components/schemas/Group'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '405':
+          $ref: '#/components/responses/MethodNotAllowed'   
+        '5XX':
+          $ref: '#/components/responses/InternalServerError' 
+      security:
+        - admin_auth:
+          - write_all
+          - read_all
+          
+components:
+  schemas:
+  
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthData:
+          type: string
+          format: date
+        isAdmin:
+          type: boolean
+          default: false
+        isBanned:
+          type: boolean
+          default: false
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 64
+        phone:
+          type: string
+          format: phone
+      required:
+        - username
+        - firstName
+        - lastName
+        - birthData
+        - email
+        - password
+        - phone
+      example:
+        username: anonim
+        firstName: John
+        lastName: Doe
+        birthData: '2000-05-02'
+        email: john-doe@email.com
+        password: '2fj30S$242'
+        phone: '+380111111111'
+          
+    Notice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: '9fe2c4e93f654fdbb24c02b15259716c'
+        title:
+          type: string
+          example: 'Sell garage'
+        text:
+          type: string
+          example: 'This ia an anouncement for selling garages'
+        createdAt:
+          type: string
+          format: date-time
+        endAt:
+          type: string
+          format: date-time
+        tags: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        user:
+          $ref: '#/components/schemas/User'
+        type:
+          type: string
+          enum: [public, local]
+        location:
+          $ref: '#/components/schemas/Location'
+      required:
+        - title
+        - text
+        - endAt
+        - user
+      example:
+        title: 'Rent a flat'
+        text: 'I am renting a flat'
+        endAt: '2022-12-01 12:00:00'
+        user: 
+          $ref: '#/components/schemas/User'
+    
+    Group:
+      type: object
+      properties: 
+        id:
+          type: string
+          format: uuid
+          example: '9fe2c4e93f654fdbb24c02b15259716c'
+        name:
+          type: string
+        description:
+          type: string
+        tags: 
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+      required:
+        - name
+        - description
+      example:
+        name: 'Accomodation'
+        description: 'Group which is using for tags related to accomodation'
+    
+    Tag:
+      type: object
+      properties: 
+        id:
+          type: string
+          format: uuid
+          example: '9fe2c4e93f654fdbb24c02b15259716c'
+        name:
+          type: string
+        isActive:
+          type: boolean
+          default: true
+        color:
+          type: string
+      required:
+        - name
+        - color
+      example:
+        name: 'Flat'
+        color: '#dea918'
+          
+    Location:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        street:
+          type: string
+          example: 'Horodotska 34'
+        city: 
+          type: string
+          example: 'Lviv'
+        country:
+          type: string
+          example: 'Ukraine'
+        region:
+          type: string
+          example: 'East Europe'
+        zip:
+          type: string
+          example: '94301'
+      required:
+        - street
+        - city
+        - country
+        - region
+  
+  # Schema for error response body
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        status:
+          type: string
+      required:
+        - code
+        - status
+    
+  responses:
+    NoticeArray:
+      description: Successful operation
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Notice'  
+    NotFound: # 404
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 404
+            status: 'Resource not found'
+    Unauthorized: # 401
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: 401
+            status: 'User is not authorized'
+    BadRequest: # 400
+      description: Invalid data supplied
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error' 
+          example:
+            code: 400
+            status: 'Invalid id supplied'
+    MethodNotAllowed: # 405
+      description: Method not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error' 
+          example:
+            code: 405
+            status: 'Current method is not allowed'
+    InternalServerError: # 500
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error' 
+          example:
+            code: 500
+            status: 'Something went wrong'
+  
+  parameters:
+    idParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  
+  securitySchemes:
+    user_auth:
+      type: oauth2
+      description: User authorization. 
+      flows:
+        implicit:
+          authorizationUrl: https://api.notice-board.com/oauth2/authorize
+          scopes:
+            read_notice: read user's created notices
+            write_notice: modify or delete user's notices
+            read_user: read user's info
+            write_user: modify user's info
+    admin_auth:
+      type: oauth2
+      description: Admin authorization. 
+      flows:
+        implicit:
+          authorizationUrl: https://api.notice-board.com/oauth2/authorize
+          scopes:
+            read_all: read all data
+            write_all: modify or delete all data
+
+            
