@@ -124,3 +124,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+
+app/
+tests/
+application/
+config/
+notice_board_api.yaml
+Pipfile
+Pipfile.lock
+README.md
