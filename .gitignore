@@ -127,8 +127,8 @@ dmypy.json
 
 app/
 tests/
-application/
-config/
+application.py
+config.py
 notice_board_api.yaml
 Pipfile
 Pipfile.lock
