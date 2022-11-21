@@ -1,22 +1,67 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from config import *
 
 
-app = Flask(__name__)
+api = Blueprint('api', __name__, url_prefix='/api/v1')
 
-app.config['TESTING'] = TESTING
-app.config['DEBUG'] = DEBUG
+CONFIG_NAME = os.environ.get('CONFIG_NAME', 'dev')
+
+
+def init_extensions(app: Flask) -> None:
+    """Initialize app extensions"""
+    import extensions as ext
+    ext.db.init_app(app)
+    ext.migrate.init_app(app, ext.db)
+    ext.bcrypt.init_app(app)
+    ext.ma.init_app(app)
+
+
+def register_blueprints(app: Flask) -> Flask:
+    """Register app blueprints"""
+    app.register_blueprint(api)
+    return app
+
+
+def add_cli_commands(app: Flask) -> Flask:
+    """Add cli app commands"""
+    import cli_commands as cli
+    app.cli.add_command(cli.create_db)
+    app.cli.add_command(cli.drop_db)
+    return app
+
+
+def create_app(config_name: str) -> Flask:
+    """Flask Application Factory"""
+
+    app = Flask(__name__)
+
+    app.config.from_object(config_by_name[config_name])
+
+    init_extensions(app)
+
+    app = register_blueprints(app)
+
+    app = add_cli_commands(app)
+
+    return app
+
+
+from app.views import *  # noqa
+from app.models import *  # noqa
+
+
+app = create_app(config_name=CONFIG_NAME)
 
 
 @app.route("/")
 def root():
-    return f'Main page'
+    return f'This is <b>Notib</b> Project API'
 
 
-@app.route("/api/v1/hello-world-<int:variant>")
-def hello_world(variant):
-    return f'Hello World {variant}'
+@app.errorhandler(404)
+def not_found(error):
+    return "Page not found (404)"
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    app.run()
