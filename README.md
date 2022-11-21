@@ -35,4 +35,29 @@ After this start **WSGI** server using [Waitress](https://flask.palletsprojects.
 waitress-serve --host 127.0.0.1 application:app
 ```
 
+## Start app using 'flask'
 
+Set **FLASK_APP** on Windows
+```
+set FLASK_APP=application
+```
+
+Set **FLASK_APP** on UNIX
+```
+export FLASK_APP=application
+```
+
+Run app
+```
+flask run
+```
+
+Create db
+```
+flask create_db
+```
+
+Drop db
+```
+flask drop_db
+```

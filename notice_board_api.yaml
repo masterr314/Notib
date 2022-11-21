@@ -20,7 +20,7 @@ info:
   version: 0.0.1
 
 servers:
-  - url: https://notice-board.com/api/v1
+  - url: https://notices-board.com/api/v1
     description: Server for production
   - url: http://localhost:{port}/api/v1
     description: Server for development
@@ -221,7 +221,7 @@ paths:
     post:
       tags:
         - Notice
-      summary: Add new notice
+      summary: Add new notices
       description: Add new Notice to the system
       operationId: addNotice
       requestBody:
@@ -253,8 +253,8 @@ paths:
     get:
       tags:
         - Notice
-      summary: Get notice by id
-      description: Retrieve notice using id
+      summary: Get notices by id
+      description: Retrieve notices using id
       operationId: getNoticeById
       parameters:
         - $ref: '#/components/parameters/idParam'
@@ -277,7 +277,7 @@ paths:
     put:
       tags:
         - Notice
-      summary: Update notice
+      summary: Update notices
       description: Add new Notice to the system
       operationId: updateNotice
       parameters:
@@ -310,7 +310,7 @@ paths:
     delete:
       tags:
         - Notice
-      summary: Delete notice
+      summary: Delete notices
       description: Delete Notice from the system
       operationId: deleteNotice
       parameters:
@@ -364,7 +364,7 @@ paths:
     post:
       tags:
         - Tag
-      summary: Add new tag
+      summary: Add new tags
       description: Add new Tag to the system
       operationId: addTag
       requestBody:
@@ -393,8 +393,8 @@ paths:
     get:
       tags:
         - Tag
-      summary: Get tag by id
-      description: Retrieve tag using id
+      summary: Get tags by id
+      description: Retrieve tags using id
       operationId: getTagById
       parameters:
         - $ref: '#/components/parameters/idParam'
@@ -417,7 +417,7 @@ paths:
     put:
       tags:
         - Tag
-      summary: Update tag
+      summary: Update tags
       description: Add new Tag to the system
       operationId: updateTag
       parameters:
@@ -447,7 +447,7 @@ paths:
     delete:
       tags:
         - Tag
-      summary: Delete tag
+      summary: Delete tags
       description: Delete Tag from the system
       operationId: deleteTag
       parameters:
@@ -849,7 +849,7 @@ components:
       description: User authorization. 
       flows:
         implicit:
-          authorizationUrl: https://api.notice-board.com/oauth2/authorize
+          authorizationUrl: https://api.notices-board.com/oauth2/authorize
           scopes:
             read_notice: read user's created notices
             write_notice: modify or delete user's notices
@@ -860,7 +860,7 @@ components:
       description: Admin authorization. 
       flows:
         implicit:
-          authorizationUrl: https://api.notice-board.com/oauth2/authorize
+          authorizationUrl: https://api.notices-board.com/oauth2/authorize
           scopes:
             read_all: read all data
             write_all: modify or delete all data
