@@ -8,6 +8,7 @@ from app.models import User, Location, Notice
 from app.notices.schemas.notice import notice_schema, notices_schema
 from extensions import db
 from app.notices.models.notice_type import NoticeType
+from app.auth.utils import grant_access
 
 
 @api.route("/notices")
@@ -32,6 +33,7 @@ def get_notice_by_id(notice_id):
 
 
 @api.route('/notice', methods=['POST'])
+@grant_access()
 def add_notice():
 
     data = request.json
@@ -78,6 +80,7 @@ def add_notice():
 
 
 @api.route('/notice/<notice_id>', methods=['PUT'])
+@grant_access()
 def update_notice(notice_id):
 
     data = request.json
@@ -116,6 +119,7 @@ def update_notice(notice_id):
 
 
 @api.route('/notice/<notice_id>', methods=['DELETE'])
+@grant_access()
 def delete_notice(notice_id):
 
     notice = Notice.query.filter(Notice.id == notice_id).first()

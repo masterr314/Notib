@@ -3,8 +3,10 @@ from sqlalchemy.exc import IntegrityError
 
 from application import api
 from app.models import Group, Tag
+from app.accounts.role import Role
 from app.tags.schemas.group import group_schema, groups_schema
 from app.tags.schemas.tag import tag_schema, tags_schema
+from app.auth.utils import grant_access
 from extensions import db
 
 
@@ -51,6 +53,7 @@ def get_tag_by_id(tag_id):
 
 
 @api.route('/tag', methods=['POST'])
+@grant_access([Role.admin])
 def add_tag():
 
     data = request.json
@@ -78,6 +81,7 @@ def add_tag():
 
 
 @api.route('/tag/<tag_id>', methods=['PUT'])
+@grant_access([Role.admin])
 def update_tag(tag_id):
 
     data = request.json
@@ -114,6 +118,7 @@ def update_tag(tag_id):
 
 
 @api.route('/tag/<tag_id>', methods=['DELETE'])
+@grant_access([Role.admin])
 def delete_tag(tag_id):
 
     tag = Tag.query.filter(Tag.id == tag_id).first()
@@ -139,6 +144,7 @@ def delete_tag(tag_id):
 
 
 @api.route('/group', methods=['POST'])
+@grant_access([Role.admin])
 def add_group():
 
     data = request.json
@@ -165,6 +171,7 @@ def add_group():
 
 
 @api.route('/group/<group_id>', methods=['PUT'])
+@grant_access([Role.admin])
 def update_group(group_id):
 
     data = request.json
@@ -198,6 +205,7 @@ def update_group(group_id):
 
 
 @api.route('/group/<group_id>', methods=['DELETE'])
+@grant_access([Role.admin])
 def delete_group(group_id):
 
     group = Group.query.filter(Group.id == group_id).first()

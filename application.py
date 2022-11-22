@@ -14,6 +14,7 @@ def init_extensions(app: Flask) -> None:
     ext.migrate.init_app(app, ext.db)
     ext.bcrypt.init_app(app)
     ext.ma.init_app(app)
+    ext.jwt.init_app(app)
 
 
 def register_blueprints(app: Flask) -> Flask:
