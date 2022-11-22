@@ -9,6 +9,7 @@ POSTGRES = os.environ.get('DATABASE_URL')
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'my_precious_secret_key')
+    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'jwt_secret_key')
     FLASK_ADMIN_SWATCH = 'darkly'
     DEBUG = False
 

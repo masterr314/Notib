@@ -8,19 +8,16 @@ from app.models import User, Location
 from app.accounts.schemas.user import user_schema, users_schema
 from app.accounts.role import Role
 from extensions import db, bcrypt
+from app.auth.utils import grant_access
 
 
 @api.route("/")
 def root():
-    return f'Main page'
-
-
-@api.route("/hello-world-<int:variant>")
-def hello_world(variant):
-    return f'Hello World {variant}'
+    return f'Notib API v1.0'
 
 
 @api.route("/users")
+@grant_access([Role.admin])
 def get_users():
     users = User.query.all()
 
@@ -30,6 +27,7 @@ def get_users():
 
 
 @api.route('/user/<user_id>')
+@grant_access(match=True)
 def get_user_by_id(user_id):
     user = User.query.filter(User.id == user_id).first()
 
@@ -92,6 +90,7 @@ def add_user():
 
 
 @api.route('/user/<user_id>', methods=['PUT'])
+@grant_access(match=True)
 def update_user(user_id):
 
     data = request.json
@@ -147,6 +146,7 @@ def update_user(user_id):
 
 
 @api.route('/user/<user_id>', methods=['DELETE'])
+@grant_access(match=True)
 def delete_user(user_id):
 
     user = User.query.filter(User.id == user_id).first()
