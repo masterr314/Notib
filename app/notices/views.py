@@ -2,9 +2,10 @@ from datetime import datetime
 
 from flask import request, jsonify
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import current_user
 
 from application import api
-from app.models import User, Location, Notice
+from app.models import Location, Notice
 from app.notices.schemas.notice import notice_schema, notices_schema
 from extensions import db
 from app.notices.models.notice_type import NoticeType
@@ -49,7 +50,7 @@ def add_notice():
                 street=loc.get('street'),
                 zip=loc.get('region'),
             )
-            db.session.merge(location)
+            db.session.add(location)
             db.session.commit()
         else:
             location = data.get('location')
@@ -60,6 +61,7 @@ def add_notice():
             endAt=datetime.strptime(data.get('endAt', ''), "%d-%m-%Y"),
             type=data.get('type') if data.get('type') else NoticeType.public,
             location_id=location.id,
+            user=current_user.id
         )
 
         notice.createdAt = datetime.now()

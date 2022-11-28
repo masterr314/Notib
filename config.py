@@ -1,42 +1,57 @@
 import os
-
+from datetime import timedelta
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-
-POSTGRES = os.environ.get('DATABASE_URL')
+API_VERSION = 'v1'
+API_PREFIX = f'/api/{API_VERSION}'
 
 
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'my_precious_secret_key')
-    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'jwt_secret_key')
-    FLASK_ADMIN_SWATCH = 'darkly'
+    # Change the secret key in production run.
+    SECRET_KEY = os.environ.get("SECRET_KEY", os.urandom(24))  # <-
     DEBUG = False
+
+    # JWT Extended config
+    JWT_SECRET_KEY = os.environ.get("JWT_SECRET_KEY", os.urandom(24))  # <-
+
+    # Set the token to expire every week
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+
+    # Flask-Admin
+    FLASK_ADMIN_SWATCH = 'darkly'
 
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'main.db')
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DATABASE_URL", "sqlite:///" + os.path.join(basedir, "main.db")
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Add logger
 
 
 class TestingConfig(Config):
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'test.db')
+    # In-memory SQLite for testing
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = POSTGRES
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "DATABASE_URL", "sqlite:///" + os.path.join(basedir, "notib_db.sqlite")  # <-
+    )
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
 config_by_name = dict(
     dev=DevelopmentConfig,
     test=TestingConfig,
-    prod=ProductionConfig
+    prod=ProductionConfig,
+    default=DevelopmentConfig,
 )
-
-key = Config.SECRET_KEY
