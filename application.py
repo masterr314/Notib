@@ -2,9 +2,9 @@ from flask import Flask, Blueprint
 from config import *
 
 
-api = Blueprint('api', __name__, url_prefix='/api/v1')
+api = Blueprint('api', __name__, url_prefix=API_PREFIX)
 
-CONFIG_NAME = os.environ.get('CONFIG_NAME', 'dev')
+FLASK_CONFIG = os.environ.get('FLASK_CONFIG', 'default')
 
 
 def init_extensions(app: Flask) -> None:
@@ -31,12 +31,12 @@ def add_cli_commands(app: Flask) -> Flask:
     return app
 
 
-def create_app(config_name: str) -> Flask:
+def create_app(config_mode: str) -> Flask:
     """Flask Application Factory"""
 
     app = Flask(__name__)
 
-    app.config.from_object(config_by_name[config_name])
+    app.config.from_object(config_by_name[config_mode])
 
     init_extensions(app)
 
@@ -51,7 +51,7 @@ from app.views import *  # noqa
 from app.models import *  # noqa
 
 
-app = create_app(config_name=CONFIG_NAME)
+app = create_app(config_mode=FLASK_CONFIG)
 
 
 @app.route("/")

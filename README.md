@@ -2,7 +2,7 @@
 
 Clone repository using command below
 ```
-git clone https://github.com/masterr314/PP_lab_repo.git
+git clone https://github.com/masterr314/Notib.git
 ```
 
 
@@ -60,4 +60,21 @@ flask create_db
 Drop db
 ```
 flask drop_db
+```
+
+## Testing
+
+Run pytest
+```
+pytest -vv
+```
+
+Run coverage
+```
+coverage run -m pytest
+```
+
+See coverage report
+```
+coverage report -m
 ```
